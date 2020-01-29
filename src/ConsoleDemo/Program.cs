@@ -5,14 +5,18 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
+
+
+
 namespace ConsoleDemo
 {
     class Program
     {
         static void Main(string[] args)
         {
-            DemoHal();
-            //DemoMozart();
+            //DemoKike();
+            //DemoHal();
+            DemoMozart();
             //DemoQRSS();
         }
 
@@ -21,8 +25,20 @@ namespace ConsoleDemo
             var spec = new Spectrogram.Spectrogram(sampleRate: 8000, fftSize: 2048, step: 700);
             float[] values = Spectrogram.Tools.ReadWav("mozart.wav");
             spec.AddExtend(values);
+            byte [] detectedFrec = Spectrogram.Tools.LoadDetectedFrec("data.bin");
+            spec.AddDetectedFrec(detectedFrec);
             Bitmap bmp = spec.GetBitmap(intensity: 2, freqHigh: 2500);
             spec.SaveBitmap(bmp, "mozart.jpg");
+        }
+
+
+        static void DemoKike()
+        {
+            var spec = new Spectrogram.Spectrogram(sampleRate: 8000, fftSize: 2048, step: 700);
+            float[] values = Spectrogram.Tools.ReadWav("voice_sweep_kike.wav");
+            spec.AddExtend(values);
+            Bitmap bmp = spec.GetBitmap(intensity: 2, freqHigh: 2500);
+            spec.SaveBitmap(bmp, "kike.jpg");
         }
 
         static void DemoQRSS()
@@ -37,7 +53,7 @@ namespace ConsoleDemo
 
         static void DemoHal()
         {
-            var spec = new Spectrogram.Spectrogram(sampleRate: 15000, fftSize: 4096, step: 400);
+            var spec = new Spectrogram.Spectrogram(sampleRate: 44100, fftSize: 4096, step: 400);
             float[] values = Spectrogram.Tools.ReadMp3("cant-do-that.mp3");
             spec.AddExtend(values);
             Bitmap bmp;

@@ -4,12 +4,14 @@ using System.Text;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.Runtime.InteropServices;
+using System.IO; 
 
 namespace Spectrogram
 {
     class Image
     {
-        public static Bitmap BitmapFromFFTs(float[][] ffts, Settings.DisplaySettings displaySettings)
+
+        public static Bitmap BitmapFromFFTs(float[][] ffts, Settings.DisplaySettings displaySettings, byte[] detectedFrec_ = null)
         {
 
             if (ffts == null || ffts.Length == 0)
@@ -37,6 +39,7 @@ namespace Spectrogram
                     continue;
                 }
 
+
                 if (ffts[col] == null)
                     continue;
 
@@ -51,6 +54,12 @@ namespace Spectrogram
                     pixelValue = Math.Max(0, pixelValue);
                     pixelValue = Math.Min(255, pixelValue);
                     pixels[bytePosition] = (byte)(pixelValue);
+                    if(detectedFrec_ != null &&  col + 1 < detectedFrec_.Length && row == detectedFrec_[col + 1])
+                    {
+                        pixels[bytePosition - 2] = 0;
+                        pixels[bytePosition - 1] = 255;
+                        pixels[bytePosition] = 0;
+                    }
                 }
             }
 
@@ -59,6 +68,7 @@ namespace Spectrogram
 
             return bmp;
         }
+
 
         public static Bitmap Rotate(Bitmap bmpIn, float angle = 90)
         {

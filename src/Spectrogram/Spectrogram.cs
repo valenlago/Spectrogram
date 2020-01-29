@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Imaging;
+using System.IO;
 
 namespace Spectrogram
 {
@@ -12,6 +13,8 @@ namespace Spectrogram
 
         public List<float[]> fftList = new List<float[]>();
         public List<float> signal = new List<float>();
+        public List<byte> detectedFrec;
+
 
         public int nextIndex;
         public float[] latestFFT;
@@ -37,7 +40,12 @@ namespace Spectrogram
         {
             return fftSettings.ToString();
         }
-        
+
+        public void AddDetectedFrec(byte[] values)
+        {
+            detectedFrec = new List<byte>(values);
+        }
+
         public void AddExtend(float[] values)
         {
             signal.AddRange(values);
@@ -60,6 +68,7 @@ namespace Spectrogram
         {
             int segmentsRemaining = (signal.Count - fftSettings.fftSize) / fftSettings.step;
             float[] segment = new float[fftSettings.fftSize];
+           
 
             while (signal.Count > (fftSettings.fftSize + fftSettings.step))
             {
@@ -89,6 +98,10 @@ namespace Spectrogram
         private void AddNewFftExtend(float[] fft)
         {
             fftList.Add(fft);
+        }
+        private void AddNewFloat(byte data)
+        {
+           detectedFrec.Add(data);
         }
 
         private void AddNewFftFixed(float[] fft, int fixedSize, bool scroll)
@@ -151,9 +164,17 @@ namespace Spectrogram
             Bitmap bmpIndexed;
             Bitmap bmpRgb;
 
+
             using (var benchmark = new Benchmark(true))
             {
-                bmpIndexed = Image.BitmapFromFFTs(fftList.ToArray(), displaySettings);
+                if(detectedFrec != null)
+                {
+                    bmpIndexed = Image.BitmapFromFFTs(fftList.ToArray(), displaySettings, detectedFrec.ToArray());
+                } 
+                else 
+                {
+                    bmpIndexed = Image.BitmapFromFFTs(fftList.ToArray(), displaySettings);
+                }
                 if (vertical)
                     bmpIndexed = Image.Rotate(bmpIndexed);
                 bmpRgb = bmpIndexed.Clone(new Rectangle(0, 0, bmpIndexed.Width, bmpIndexed.Height), PixelFormat.Format32bppPArgb);

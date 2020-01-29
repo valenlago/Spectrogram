@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Drawing;
 using System.Text;
+using System.IO;
 
 namespace Spectrogram
 {
@@ -51,6 +52,15 @@ namespace Spectrogram
             if (sampleLimit != null)
                 sampleCount = Math.Min(sampleCount, (int)sampleLimit);
             return FloatsFromBytesINT16(bytes, skipFirstBytes: 44);
+        }
+
+
+        public static byte[] LoadDetectedFrec(string wavFilePath)
+        {
+            string actualPath = FindFile(wavFilePath);
+            if (actualPath == null)
+                throw new ArgumentException("file not found: " + actualPath);
+            return System.IO.File.ReadAllBytes(actualPath);
         }
 
         public static float[] ReadMp3(string mp3FilePath, int? sampleLimit = null)
