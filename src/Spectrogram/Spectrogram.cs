@@ -13,7 +13,7 @@ namespace Spectrogram
 
         public List<float[]> fftList = new List<float[]>();
         public List<float> signal = new List<float>();
-        public List<byte> detectedFrec;
+        public List<int> detectedFrec;
 
 
         public int nextIndex;
@@ -41,9 +41,9 @@ namespace Spectrogram
             return fftSettings.ToString();
         }
 
-        public void AddDetectedFrec(byte[] values)
+        public void AddDetectedFrec(int[] values)
         {
-            detectedFrec = new List<byte>(values);
+            detectedFrec = new List<int>(values);
         }
 
         public void AddExtend(float[] values)

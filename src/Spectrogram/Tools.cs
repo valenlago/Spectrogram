@@ -54,13 +54,26 @@ namespace Spectrogram
             return FloatsFromBytesINT16(bytes, skipFirstBytes: 44);
         }
 
-
-        public static byte[] LoadDetectedFrec(string wavFilePath)
+        public static int[] LoadDetectedFrec(string binFilePath, double scaler)
         {
-            string actualPath = FindFile(wavFilePath);
+            string actualPath = FindFile(binFilePath);
             if (actualPath == null)
                 throw new ArgumentException("file not found: " + actualPath);
-            return System.IO.File.ReadAllBytes(actualPath);
+            if (File.Exists(actualPath))
+            {
+                using (BinaryReader reader = new BinaryReader(File.Open(actualPath, FileMode.Open)))
+                {
+                    long intsToRead = new System.IO.FileInfo(actualPath).Length / 4;
+                    int[] detectedFrec = new int[intsToRead];
+                    for(int i = 0; i < intsToRead; i++)
+                    {
+                        int freq = reader.ReadInt32();
+                        detectedFrec[i] = (int)((double) freq / scaler);
+                    }
+                    return detectedFrec;
+                }
+            }
+            return null;
         }
 
         public static float[] ReadMp3(string mp3FilePath, int? sampleLimit = null)

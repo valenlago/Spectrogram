@@ -14,9 +14,9 @@ namespace ConsoleDemo
     {
         static void Main(string[] args)
         {
-            //DemoKike();
+            DemoKike();
             //DemoHal();
-            DemoMozart();
+            //DemoMozart();
             //DemoQRSS();
         }
 
@@ -25,20 +25,25 @@ namespace ConsoleDemo
             var spec = new Spectrogram.Spectrogram(sampleRate: 8000, fftSize: 2048, step: 700);
             float[] values = Spectrogram.Tools.ReadWav("mozart.wav");
             spec.AddExtend(values);
-            byte [] detectedFrec = Spectrogram.Tools.LoadDetectedFrec("data.bin");
+            int [] detectedFrec = Spectrogram.Tools.LoadDetectedFrec("data.bin", spec.displaySettings.fftResolution);
             spec.AddDetectedFrec(detectedFrec);
-            Bitmap bmp = spec.GetBitmap(intensity: 2, freqHigh: 2500);
+            Bitmap bmp = spec.GetBitmap(intensity: 2, freqHigh: 2500, showTicks: true);
             spec.SaveBitmap(bmp, "mozart.jpg");
         }
 
 
         static void DemoKike()
         {
-            var spec = new Spectrogram.Spectrogram(sampleRate: 8000, fftSize: 2048, step: 700);
+            int fs = 44100, fft_size = 4096, frec_high = 2500;
+            int height = frec_high * fft_size / fs;
+            double scaler = (double)frec_high / (double)height;
+            var spec = new Spectrogram.Spectrogram(sampleRate: fs, fftSize: fft_size, step: 1024);
             float[] values = Spectrogram.Tools.ReadWav("voice_sweep_kike.wav");
             spec.AddExtend(values);
-            Bitmap bmp = spec.GetBitmap(intensity: 2, freqHigh: 2500);
-            spec.SaveBitmap(bmp, "kike.jpg");
+            int[] detectedFrec = Spectrogram.Tools.LoadDetectedFrec("detectedFrec.bin", scaler);
+            spec.AddDetectedFrec(detectedFrec);
+            Bitmap bmp = spec.GetBitmap(intensity: 2, freqHigh: frec_high, showTicks: true);
+            spec.SaveBitmap(bmp, "kike_100.jpg");
         }
 
         static void DemoQRSS()

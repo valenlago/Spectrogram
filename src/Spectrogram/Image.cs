@@ -11,7 +11,7 @@ namespace Spectrogram
     class Image
     {
 
-        public static Bitmap BitmapFromFFTs(float[][] ffts, Settings.DisplaySettings displaySettings, byte[] detectedFrec_ = null)
+        public static Bitmap BitmapFromFFTs(float[][] ffts, Settings.DisplaySettings displaySettings, int[] detectedFrec_ = null)
         {
 
             if (ffts == null || ffts.Length == 0)
@@ -54,11 +54,9 @@ namespace Spectrogram
                     pixelValue = Math.Max(0, pixelValue);
                     pixelValue = Math.Min(255, pixelValue);
                     pixels[bytePosition] = (byte)(pixelValue);
-                    if(detectedFrec_ != null &&  col + 1 < detectedFrec_.Length && row == detectedFrec_[col + 1])
+                    if(detectedFrec_ != null &&  col < detectedFrec_.Length && row  == detectedFrec_[col] )
                     {
-                        pixels[bytePosition - 2] = 0;
-                        pixels[bytePosition - 1] = 255;
-                        pixels[bytePosition] = 0;
+                        pixels[bytePosition] = 255;
                     }
                 }
             }
