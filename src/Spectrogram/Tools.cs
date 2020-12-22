@@ -76,6 +76,28 @@ namespace Spectrogram
             return null;
         }
 
+        public static int[] LoadObjectiveFrec(string binFilePath, double scaler)
+        {
+            string actualPath = FindFile(binFilePath);
+            if (actualPath == null)
+                throw new ArgumentException("file not found: " + actualPath);
+            if (File.Exists(actualPath))
+            {
+                using (BinaryReader reader = new BinaryReader(File.Open(actualPath, FileMode.Open)))
+                {
+                    long intsToRead = new System.IO.FileInfo(actualPath).Length / 4;
+                    int[] ObjectiveFrec = new int[intsToRead];
+                    for (int i = 0; i < intsToRead; i++)
+                    {
+                        int freq = reader.ReadInt32();
+                        ObjectiveFrec[i] = (int)((double)freq / scaler);
+                    }
+                    return ObjectiveFrec;
+                }
+            }
+            return null;
+        }
+
         public static float[] ReadMp3(string mp3FilePath, int? sampleLimit = null)
         {
             string actualPath = FindFile(mp3FilePath);

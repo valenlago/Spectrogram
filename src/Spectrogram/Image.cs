@@ -11,7 +11,7 @@ namespace Spectrogram
     class Image
     {
 
-        public static Bitmap BitmapFromFFTs(float[][] ffts, Settings.DisplaySettings displaySettings, int[] detectedFrec_ = null)
+        public static Bitmap BitmapFromFFTs(float[][] ffts, Settings.DisplaySettings displaySettings, int[] detectedFrec_ = null, int[] objectiveFrec_ = null)
         {
 
             if (ffts == null || ffts.Length == 0)
@@ -43,6 +43,13 @@ namespace Spectrogram
                 if (ffts[col] == null)
                     continue;
 
+                int detectedFreqpos = (col * detectedFrec_.Length) / bitmapData.Stride;
+                int objectiveFreqpos = (col * objectiveFrec_.Length) / bitmapData.Stride;
+                Console.WriteLine("col:" + col);
+                Console.WriteLine("detectedFreq_.Lenght:" + detectedFrec_.Length);
+                Console.WriteLine("detectedFreqpos:" + detectedFreqpos);
+                Console.WriteLine("detectedFreq_[detectedFreqPos]" + detectedFrec_[detectedFreqpos]);
+
                 for (int row = 0; row < bmp.Height; row++)
                 {
                     int bytePosition = (bmp.Height - 1 - row) * bitmapData.Stride + col;
@@ -51,12 +58,19 @@ namespace Spectrogram
                     if (displaySettings.decibels)
                         pixelValue = (float)(Math.Log10(pixelValue) * 20);
                     pixelValue = (pixelValue * displaySettings.brightness);
-                    pixelValue = Math.Max(0, pixelValue);
+                    pixelValue = Math.Max(2, pixelValue);
                     pixelValue = Math.Min(255, pixelValue);
                     pixels[bytePosition] = (byte)(pixelValue);
-                    if(detectedFrec_ != null &&  col < detectedFrec_.Length && row  == detectedFrec_[col] )
+                    
+                 
+       
+                    if (detectedFrec_ != null  && row  == detectedFrec_[detectedFreqpos])
                     {
-                        pixels[bytePosition] = 255;
+                       pixels[bytePosition] = 0;
+                    }
+                    if (objectiveFrec_ != null && row == objectiveFrec_[objectiveFreqpos])
+                    {
+                        pixels[bytePosition] = 1;
                     }
                 }
             }

@@ -14,6 +14,7 @@ namespace Spectrogram
         public List<float[]> fftList = new List<float[]>();
         public List<float> signal = new List<float>();
         public List<int> detectedFrec;
+        public List<int> objectiveFrec;
 
 
         public int nextIndex;
@@ -44,6 +45,11 @@ namespace Spectrogram
         public void AddDetectedFrec(int[] values)
         {
             detectedFrec = new List<int>(values);
+        }
+
+        public void AddObjectiveFrec(int[] values)
+        {
+            objectiveFrec = new List<int>(values);
         }
 
         public void AddExtend(float[] values)
@@ -167,9 +173,9 @@ namespace Spectrogram
 
             using (var benchmark = new Benchmark(true))
             {
-                if(detectedFrec != null)
+                if(detectedFrec != null && objectiveFrec != null)
                 {
-                    bmpIndexed = Image.BitmapFromFFTs(fftList.ToArray(), displaySettings, detectedFrec.ToArray());
+                    bmpIndexed = Image.BitmapFromFFTs(fftList.ToArray(), displaySettings, detectedFrec.ToArray(), objectiveFrec.ToArray());
                 } 
                 else 
                 {

@@ -19,7 +19,9 @@ namespace Spectrogram.Colormaps
         {
             ColorPalette pal = bmp.Palette;
 
-            for (int i = 0; i < 256; i++)
+            pal.Entries[0] = Color.FromArgb(255, 255, 0, 0);
+            //pal.Entries[0] = Color.FromArgb(255, 0, 0, 255);
+            for (int i = 1; i < 256; i++)
                 pal.Entries[i] = Color.FromArgb(255, 255 - i, 255 - i, 255 - i);
 
             bmp.Palette = pal;

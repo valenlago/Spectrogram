@@ -28,14 +28,14 @@ namespace Spectrogram.Settings
         public int? highlightColumn = null;
         public bool showTicks = false;
         public double tickSpacingSec = 1;
-        public double tickSpacingHz = 100;
+        public double tickSpacingHz = 250;
 
         public bool renderNeeded;
 
         public double lastRenderMsec;
 
-        public int tickSize = 5;
-        public Font tickFont = new Font(FontFamily.GenericMonospace, (float)8);
+        public int tickSize = 4;
+        public Font tickFont = new Font(FontFamily.GenericSansSerif, (float)6);
         public StringFormat sfTicksRight = new StringFormat()
         {
             LineAlignment = StringAlignment.Center,
